@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "botaniccheater:botanic_cheater"
+  },
+  "pattern": [
+    "LCL",
+    "LPL",
+    "LRL"
+  ],
+  "key": {
+    "L": {
+      "type": "forge:ore_dict",
+      "ore": "livingrock"
+    },
+    "C": {
+      "item": "botania:opencrate",
+      "data": 0
+    },
+    "P": {
+      "item": "minecraft:wooden_pressure_plate"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    }
+  }
+}

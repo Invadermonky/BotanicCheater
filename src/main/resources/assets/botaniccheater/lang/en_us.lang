@@ -1,0 +1,9 @@
+# Block
+tile.botaniccheater:botanic_cheater.name=Botanic Cheater
+
+# Research
+botania.entry.botanic_cheater=Botanic Cheater
+botania.tagline.botanic_cheater=Feeds nearby generating flowers
+botania.page.botanic_cheater0=The &1Botanic Cheater&r is a block used to automate nearby generating flowers.<br>The block has four inventory slots and fluid tank used to transfer items or fluids into nearby flowers.<br>The first slot holds solid fuel items and feeds &1Exoflames&r.<br>The second slot holds TNT and feeds &1Entropinnyums&r.
+botania.page.botanic_cheater1=The third and fourth slots hold food to feed nearby &1Gourmarylliseses&r. This feeding is "smart" and will prioritize alternating food whenever possible.<br>Finally, the internal fluid tank holds lava to feed into nearby &1Thermalilies&r. This feeding is "smart" and not feed flowers on cooldown.
+botania.page.botanic_cheater2=&oRedstone is too hard...&r

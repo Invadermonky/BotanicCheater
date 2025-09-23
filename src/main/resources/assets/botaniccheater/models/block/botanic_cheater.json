@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end": "botaniccheater:blocks/botanic_cheater_top",
+    "side": "botaniccheater:blocks/botanic_cheater_side"
+  }
+}
