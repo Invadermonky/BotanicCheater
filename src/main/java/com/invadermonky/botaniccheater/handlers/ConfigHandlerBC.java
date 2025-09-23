@@ -7,6 +7,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Config(modid = BotanicCheater.MOD_ID)
 public class ConfigHandlerBC {
     @Config.Name("Cheaty Endoflame")
     @Config.Comment("Endoflames can be fed solid fuel by the Botanic Cheater.")
