@@ -1,16 +1,17 @@
 {
-	"package": "com.invadermonky.botaniccheater.core.mixins" ,
-	"required": true ,
-	"refmap": "mixins.botaniccheater.refmap.json" ,
-	"target": "@env(DEFAULT)" ,
-	"minVersion": "0.8.5" ,
-	"compatibilityLevel": "JAVA_8" ,
-	"mixins": [
-		"SubTileEndoflameAccessor" ,
-		"SubTileGeneratingAccessor" ,
-		"SubTileGourmaryllisAccessor" ,
-		"SubTileHydroangeasAccessor"
-	] ,
-	"server": [] ,
-	"client": []
+  "package": "com.invadermonky.botaniccheater.core.mixins" ,
+  "required": true ,
+  "refmap": "mixins.botaniccheater.refmap.json" ,
+  "target": "@env(DEFAULT)" ,
+  "minVersion": "0.8.5" ,
+  "compatibilityLevel": "JAVA_8" ,
+  "mixins": [
+    "SubTileEndoflameAccessor" ,
+    "SubTileGeneratingAccessor" ,
+    "SubTileGourmaryllisAccessor" ,
+    "SubTileHydroangeasAccessor" ,
+    "SubTileSpectrolusAccessor"
+  ] ,
+  "server": [] ,
+  "client": []
 }

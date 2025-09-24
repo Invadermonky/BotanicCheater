@@ -7,6 +7,7 @@ Joking aside, this mod adds a single block to the game, the Botanic Cheater. Thi
 - Exoflame
 - Entropinnnyum
 - Gourmaryllis
+- Spectrolus
 - Thermalily
 
 ## FAQ

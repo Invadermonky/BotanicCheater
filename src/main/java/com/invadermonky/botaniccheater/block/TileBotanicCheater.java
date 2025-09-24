@@ -1,5 +1,7 @@
 package com.invadermonky.botaniccheater.block;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.invadermonky.botaniccheater.handlers.ConfigHandlerBC;
 import com.invadermonky.botaniccheater.handlers.NetworkHandlerBC;
 import com.invadermonky.botaniccheater.handlers.packets.PacketFXParticleBeam;
@@ -8,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -17,10 +20,12 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,30 +39,62 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.subtile.SubTileEntity;
 import vazkii.botania.common.block.ModBlocks;
-import vazkii.botania.common.block.subtile.generating.SubTileEndoflame;
-import vazkii.botania.common.block.subtile.generating.SubTileEntropinnyum;
-import vazkii.botania.common.block.subtile.generating.SubTileGourmaryllis;
-import vazkii.botania.common.block.subtile.generating.SubTileThermalily;
+import vazkii.botania.common.block.subtile.generating.*;
 import vazkii.botania.common.block.tile.TileSpecialFlower;
 import vazkii.botania.common.core.handler.ModSounds;
 
+import java.util.HashMap;
+
 public class TileBotanicCheater extends TileEntity implements ITickable {
+    private static final boolean ENABLED_ENDOFLAME = ConfigHandlerBC.cheaterEndoflame;
+    private static final boolean ENABLED_ENTROPINNNYUM = ConfigHandlerBC.cheaterEntropinnnyum;
+    private static final boolean ENABLED_GOURMARYLLIS = ConfigHandlerBC.cheaterGourmaryllis;
+    private static final boolean ENABLED_SPECTROLUS = ConfigHandlerBC.cheaterSpectrolus;
+    private static final boolean ENABLED_THERMALILY = ConfigHandlerBC.cheaterThermalily;
+
     private static final int SLOT_FUEL = 0;
     private static final int SLOT_TNT = 1;
-    private static final int SLOT_FOOD_1 = 2;
-    private static final int SLOT_FOOD_2 = 3;
+    private static final ImmutableSet<Integer> SLOTS_FOOD = ImmutableSet.of(2, 3);
+    private static final ImmutableMap<EnumDyeColor,Integer> SLOTS_WOOL = ImmutableMap.copyOf(new HashMap<EnumDyeColor,Integer>(){{
+        put(EnumDyeColor.WHITE, 4);
+        put(EnumDyeColor.ORANGE, 5);
+        put(EnumDyeColor.MAGENTA, 6);
+        put(EnumDyeColor.LIGHT_BLUE, 7);
+        put(EnumDyeColor.YELLOW, 8);
+        put(EnumDyeColor.LIME, 9);
+        put(EnumDyeColor.PINK, 10);
+        put(EnumDyeColor.GRAY, 11);
+        put(EnumDyeColor.SILVER, 12);
+        put(EnumDyeColor.CYAN, 13);
+        put(EnumDyeColor.PURPLE, 14);
+        put(EnumDyeColor.BLUE, 15);
+        put(EnumDyeColor.BROWN, 16);
+        put(EnumDyeColor.GREEN, 17);
+        put(EnumDyeColor.RED, 18);
+        put(EnumDyeColor.BLACK, 19);
+    }});
 
-    public ItemStackHandler stackHandler = new ItemStackHandler(4) {
+    public ItemStackHandler stackHandler = new ItemStackHandler(22) {
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             return !this.isItemValid(slot, stack) ? stack : super.insertItem(slot, stack, simulate);
         }
 
+        @SuppressWarnings("RedundantIfStatement")
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return (slot == SLOT_FUEL && !stack.getItem().hasContainerItem(stack) && TileEntityFurnace.isItemFuel(stack))
-                    || ((slot == SLOT_FOOD_1 || slot == SLOT_FOOD_2) && stack.getItem() instanceof ItemFood)
-                    || (slot == SLOT_TNT && Block.getBlockFromItem(stack.getItem()) == Blocks.TNT);
+            if(ENABLED_ENDOFLAME && slot == SLOT_FUEL && !stack.getItem().hasContainerItem(stack) && TileEntityFurnace.isItemFuel(stack)
+                    && Block.getBlockFromItem(stack.getItem()) != Blocks.WOOL)
+                return true;
+            if(ENABLED_ENTROPINNNYUM && slot == SLOT_TNT && Block.getBlockFromItem(stack.getItem()) == Blocks.TNT)
+                return true;
+            if(ENABLED_GOURMARYLLIS && SLOTS_FOOD.contains(slot) && stack.getItem() instanceof ItemFood)
+                return true;
+            if(ENABLED_SPECTROLUS && SLOTS_WOOL.containsValue(slot) && Block.getBlockFromItem(stack.getItem()) == Blocks.WOOL
+                    && slot == SLOTS_WOOL.get(EnumDyeColor.byMetadata(stack.getMetadata())))
+                return true;
+
+            return false;
         }
     };
     public FluidTank tank = new FluidTank(8000) {
@@ -115,6 +152,11 @@ public class TileBotanicCheater extends TileEntity implements ITickable {
                                     flowers++;
                                     did = true;
                                 }
+                            } else if(subTile instanceof SubTileSpectrolus) {
+                                if(handleSpectrolus((SubTileSpectrolus) subTile)) {
+                                    flowers++;
+                                    did = true;
+                                }
                             } else if(subTile instanceof SubTileThermalily) {
                                 if(handleThermalily((SubTileThermalily) subTile)) {
                                     flowers++;
@@ -135,7 +177,7 @@ public class TileBotanicCheater extends TileEntity implements ITickable {
     }
 
     protected boolean handleEndoflame(SubTileEndoflame endoflame) {
-        if(!ConfigHandlerBC.cheaterEndoflame) return false;
+        if(!ENABLED_ENDOFLAME) return false;
 
         if(FlowerHelper.getFlowerMana(endoflame) < endoflame.getMaxMana() && FlowerHelper.getEndoflameBurnTime(endoflame) <= 0) {
             ItemStack stack = this.stackHandler.getStackInSlot(SLOT_FUEL);
@@ -155,7 +197,7 @@ public class TileBotanicCheater extends TileEntity implements ITickable {
     }
 
     protected boolean handleEntropinnyum(SubTileEntropinnyum entropinnyum) {
-        if(!ConfigHandlerBC.cheaterEntropinnnyum) return false;
+        if(!ENABLED_ENTROPINNNYUM) return false;
 
         if(FlowerHelper.getFlowerMana(entropinnyum) <= 0) {
                 ItemStack stack = this.stackHandler.getStackInSlot(SLOT_TNT);
@@ -172,12 +214,12 @@ public class TileBotanicCheater extends TileEntity implements ITickable {
     }
 
     protected boolean handleGourmaryllis(SubTileGourmaryllis gourmaryllis) {
-        if(!ConfigHandlerBC.cheaterGourmaryllis) return false;
+        if(!ENABLED_GOURMARYLLIS) return false;
 
         if(FlowerHelper.getGourmaryllisCooldown(gourmaryllis) <= 0 && FlowerHelper.getFlowerMana(gourmaryllis) < gourmaryllis.getMaxMana()) {
             int slot = -1;
             ItemStack lastFood = FlowerHelper.getGourmaryllisLastFood(gourmaryllis);
-            for(int i = SLOT_FOOD_1; i <= SLOT_FOOD_2; i++) {
+            for(int i : SLOTS_FOOD) {
                 ItemStack stack = this.stackHandler.getStackInSlot(i);
                 if(!stack.isEmpty() && stack.getItem() instanceof ItemFood) {
                     if(!ItemHandlerHelper.canItemStacksStack(lastFood, stack)) {
@@ -215,8 +257,33 @@ public class TileBotanicCheater extends TileEntity implements ITickable {
         return false;
     }
 
+    protected boolean handleSpectrolus(SubTileSpectrolus spectrolus) {
+        if(!ENABLED_SPECTROLUS) return false;//TODO: Add spectrolus info to lexicon
+
+        int mana = FlowerHelper.getFlowerMana(spectrolus);
+        if(mana < spectrolus.getMaxMana()) {
+            int nextColor = FlowerHelper.getSpectrolusNextColor(spectrolus);
+            EnumDyeColor dyeColor = EnumDyeColor.byMetadata(nextColor);
+            int slot = SLOTS_WOOL.get(dyeColor);
+            ItemStack stack = this.stackHandler.getStackInSlot(slot);
+            if(!stack.isEmpty() && Block.getBlockFromItem(stack.getItem()) == Blocks.WOOL && stack.getMetadata() == nextColor) {
+                this.stackHandler.extractItem(slot, 1, false);
+                FlowerHelper.setSpectrolusNextColor(spectrolus, nextColor == 15 ? 0 : nextColor + 1);
+                FlowerHelper.setFlowerMana(spectrolus, Math.min(spectrolus.getMaxMana(), mana + 2400));
+                ((WorldServer) this.world).spawnParticle(EnumParticleTypes.ITEM_CRACK, false,
+                        spectrolus.getPos().getX(), spectrolus.getPos().getX(), spectrolus.getPos().getX(),
+                        20, 0.1, 0.1, 0.1, 0.05,
+                        Item.getIdFromItem(stack.getItem()), stack.getItemDamage());
+                this.spawnBeam(spectrolus.getPos());
+                spectrolus.sync();
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected boolean handleThermalily(SubTileThermalily thermalily) {
-        if(!ConfigHandlerBC.cheaterThermalily) return false;
+        if(!ENABLED_THERMALILY) return false;
 
         if(this.tank.getFluid() != null && this.tank.getFluid().getFluid() == FluidRegistry.LAVA && this.tank.getFluidAmount() >= 1000) {
             if(FlowerHelper.getThermalilyCooldown(thermalily) <= 0 && FlowerHelper.getFlowerMana(thermalily) < thermalily.getMaxMana()) {

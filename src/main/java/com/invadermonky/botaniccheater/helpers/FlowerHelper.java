@@ -1,15 +1,14 @@
 package com.invadermonky.botaniccheater.helpers;
 
-import com.invadermonky.botaniccheater.core.mixins.SubTileEndoflameAccessor;
-import com.invadermonky.botaniccheater.core.mixins.SubTileGeneratingAccessor;
-import com.invadermonky.botaniccheater.core.mixins.SubTileGourmaryllisAccessor;
-import com.invadermonky.botaniccheater.core.mixins.SubTileHydroangeasAccessor;
+import com.invadermonky.botaniccheater.core.mixins.*;
 import net.minecraft.item.ItemStack;
 import vazkii.botania.api.subtile.SubTileGenerating;
 import vazkii.botania.common.block.subtile.generating.SubTileEndoflame;
 import vazkii.botania.common.block.subtile.generating.SubTileGourmaryllis;
+import vazkii.botania.common.block.subtile.generating.SubTileSpectrolus;
 import vazkii.botania.common.block.subtile.generating.SubTileThermalily;
 
+@SuppressWarnings("unused")
 public class FlowerHelper {
     public static int getFlowerMana(SubTileGenerating subTile) {
         return ((SubTileGeneratingAccessor) subTile).getMana();
@@ -57,6 +56,14 @@ public class FlowerHelper {
 
     public static void setGourmaryllisLastFoodCount(SubTileGourmaryllis gourmaryllis, int lastFoodCount) {
         ((SubTileGourmaryllisAccessor) gourmaryllis).setLastFoodCount(lastFoodCount);
+    }
+
+    public static int getSpectrolusNextColor(SubTileSpectrolus spectrolus) {
+        return ((SubTileSpectrolusAccessor) spectrolus).getNextColor();
+    }
+
+    public static void setSpectrolusNextColor(SubTileSpectrolus spectrolus, int nextColor) {
+        ((SubTileSpectrolusAccessor) spectrolus).setNextColor(nextColor);
     }
 
     public static int getThermalilyBurnTime(SubTileThermalily thermalily) {
