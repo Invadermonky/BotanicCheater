@@ -4,7 +4,7 @@ For cheating cheaters who want to cheat.
 Joking aside, this mod adds a single block to the game, the Botanic Cheater. This blocks automates Botania flowers without the need for redstone or item entities. Just insert the items or fluids into the block using hoppers or pipes and it will automatically scan all nearby flowers and feed them the necessary materials.
 
 **Supported Flowers:**
-- Exoflame
+- Endoflame
 - Entropinnnyum
 - Gourmaryllis
 - Spectrolus

@@ -24,11 +24,10 @@ public class ConfigHandlerBC {
     @Config.Comment("Gourmaryllis can be fed food by the Botanic Cheater.")
     public static boolean cheaterGourmaryllis = true;
 
-    @Config.Ignore
     @Config.RequiresMcRestart
     @Config.Name("Cheaty Spectrolus")
     @Config.Comment("Spectrolus can be fed wool by the Botanic Cheater.")
-    public static boolean cheaterSpectrolus = false;
+    public static boolean cheaterSpectrolus = true;
 
     @Config.RequiresMcRestart
     @Config.Name("Cheaty Thermalily")

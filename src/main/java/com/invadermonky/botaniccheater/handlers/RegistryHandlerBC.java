@@ -49,7 +49,8 @@ public class RegistryHandlerBC {
         ENTRY_BOTANIC_CHEATER.setLexiconPages(
                 new PageText("0"),
                 new PageText("1"),
-                new PageCraftingRecipe("2", RegistryHandlerBC.BOTANIC_CHEATER.getRegistryName())
+                new PageText("2"),
+                new PageCraftingRecipe("3", RegistryHandlerBC.BOTANIC_CHEATER.getRegistryName())
         );
     }
 }
